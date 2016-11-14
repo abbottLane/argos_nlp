@@ -17,21 +17,21 @@ class SubstanceField:
         """ return algorithm version"""
         return self.__version__
 
-    def get(self, dictionary, field, mrn, accession, patients, mrn_caisis_map):
+    def get(self, dictionary, field, mrn, accession, patients, mrn_patid_map):
         """ fill field with value from extraction results """
         try:
-            self.get_field_contents(dictionary, field, mrn, accession, patients, mrn_caisis_map)
+            self.get_field_contents(dictionary, field, mrn, accession, patients, mrn_patid_map)
             return [self.return_d], list
         except RuntimeError:
             return [{ERR_TYPE: 'Warning', ERR_STR: 'ERROR in %s module.' % self.field_name}], Exception
 
-    def get_field_contents(self, dictionary, field, mrn, accession, patients, mrn_caisis_map):
+    def get_field_contents(self, dictionary, field, mrn, accession, patients, mrn_patid_map):
         self.return_d = {NAME: self.field_name, VALUE: None, CONFIDENCE: ('%.2f' % 0.0),
                          KEY: ALL, VERSION: self.get_version(),
                          STARTSTOPS: [], TABLE: self.table}
 
         # Get the appropriate attribute
-        doc, document_found = get_document(patients, mrn, accession, mrn_caisis_map)
+        doc, document_found = get_document(patients, mrn, accession, mrn_patid_map)
 
         if document_found:
             self.add_doc_field_contents_to_dict(doc)
@@ -71,11 +71,11 @@ class SubstanceField:
             self.return_d[STARTSTOPS].append({START: span.start, STOP: span.stop})
 
 
-def get_document(patients, mrn, accession, mrn_caisis_map):
+def get_document(patients, mrn, accession, mrn_patid_map):
     document = None
     found = False
 
-    caisis_id = mrn_caisis_map[mrn]
+    caisis_id = mrn_patid_map[mrn]
 
     for patient in patients:
         if patient.id == caisis_id:
