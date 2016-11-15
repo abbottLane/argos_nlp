@@ -25,7 +25,7 @@ __version__ = 'process_clinical1.0'
 
 
 ####################################################################################
-def get_fields(report_d, clinical_data_d, mrn, accession, patient_substance_info, mrn_patid_map):
+def get_fields(report_d, clinical_data_d, mrn, accession, patient_substance_info):
     """
     import modules, reprt_d contains parsed notes in a dict of
     {patient id:{report id:{section:{index:text}}}}} 
@@ -40,8 +40,7 @@ def get_fields(report_d, clinical_data_d, mrn, accession, patient_substance_info
         module = import_classes_and_modules(field, clinical_data_d)
 
         # get field values
-        field_value, return_type = get_field_values(module, report_d, field, mrn, accession, patient_substance_info,
-                                                    mrn_patid_map)
+        field_value, return_type = get_field_values(module, report_d, field, mrn, accession, patient_substance_info)
 
 
         # organize fields by tables, then individual records, then individual fields
@@ -83,9 +82,9 @@ def main(arguments):
     print "Finished extracting substance info"
 
     # create a list of output field dictionaries
-    mrn_to_patientid_mapping = get_mrn_to_patientid_mapping(clinical_d)
+    # mrn_to_patientid_mapping = get_mrn_to_patientid_mapping(clinical_d)
     create_output_field_dicts(arguments, clinical_d, return_type, clinical_data_d, field_value_output, return_errors,
-                              patient_substance_info, mrn_to_patientid_mapping)
+                              patient_substance_info) #mrn_patient_map went here, last arg
 
     return field_value_output, return_errors, list
 
@@ -115,7 +114,7 @@ def get_clinical_dicts(arguments):
 
 
 def create_output_field_dicts(arguments, clinical_d, return_type, clinical_data_d, field_value_output, return_errors,
-                              patient_substance_info, mrn_patid_map):
+                              patient_substance_info):
     for mrn in clinical_d:
         for accession in clinical_d[mrn]:
             field_value_d = dict()
@@ -148,8 +147,7 @@ def create_output_field_dicts(arguments, clinical_d, return_type, clinical_data_
                     pass
                 else:
                     return_fields, return_errors, return_type = get_fields(clinical_d[mrn][accession], clinical_data_d,
-                                                                           mrn, accession, patient_substance_info,
-                                                                           mrn_patid_map)
+                                                                           mrn, accession, patient_substance_info)
                     field_value_d[gb.TABLES] += return_fields
                 field_value_output.append(field_value_d)
             else:
@@ -173,10 +171,10 @@ def import_classes_and_modules(field, clinical_data_d):
     return module
 
 
-def get_field_values(module, report_d, field, mrn, accession, patient_substance_info, mrn_patid_map):
+def get_field_values(module, report_d, field, mrn, accession, patient_substance_info):
     try:
         # return fields regardless from module or class
-        field_value, return_type = module.get(report_d, field, mrn, accession, patient_substance_info, mrn_patid_map)
+        field_value, return_type = module.get(report_d, field, mrn, accession, patient_substance_info)
     except RuntimeError:
         return ([], [{gb.ERR_TYPE: 'Exception', gb.ERR_STR: \
             'FATAL ERROR could not complete ' + field + ' module or class--- \

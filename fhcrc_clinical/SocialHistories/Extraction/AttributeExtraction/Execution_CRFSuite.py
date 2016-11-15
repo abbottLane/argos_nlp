@@ -4,16 +4,17 @@ import pycrfsuite
 from fhcrc_clinical.SocialHistories.DataModeling.DataModels import Attribute
 from fhcrc_clinical.SocialHistories.Extraction.AttributeExtraction.Processing_CRFSuite import sent2features, tokenize_sentences, \
     standardize_tokens
-from fhcrc_clinical.SocialHistories.SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME, entity_types
+from fhcrc_clinical.SocialHistories.SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME
+from fhcrc_clinical.SocialHistories.SystemUtilities.Globals import entity_types
 from fhcrc_clinical.SocialHistories.SystemUtilities.Parameter_Configuration import SENTENCE_TOK_PATTERN
-
+import os
 
 def extract(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME):
     # Extract all sentences with subs info + the sentence after
     all_sentences = get_sentences_with_info_plus_sentence_after(patients)
 
     for type in entity_types: # {Amount, Duration, QuiteDate, TimeAgo, QuitAge, SecondhandAmount}
-        model_name = model_path + "Models/" + "model-" + type + ".ser.gzwl"
+        model_name = os.path.join(model_path, "model-" + type + ".ser.gzwl")
         test(all_sentences, model_name, type)
     print("Finished CRF classification")
 

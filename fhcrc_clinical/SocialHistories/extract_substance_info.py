@@ -19,7 +19,10 @@ def main(run_type=None, tsv_in=""):
     # Determine document level info
     DocFromSents.get_doc_level_info(patients)
     # Determine patient level info
-    PatientFromDocs.get_patient_level_info(patients)
+
+    # TODO: Remove patient-level rollup from main pipeline :
+    # PatientFromDocs.get_patient_level_info(patients)
+
     # Post-processing: sets of rules to clean up obvious contradictions
     postprocessing.clean_doc_lvl_predictions(patients)
     return patients

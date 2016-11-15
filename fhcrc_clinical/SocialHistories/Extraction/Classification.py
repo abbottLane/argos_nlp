@@ -2,11 +2,6 @@ import sklearn
 import cPickle as Pickle
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
-from sklearn.feature_extraction.text import HashingVectorizer, CountVectorizer, TfidfTransformer
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import Pipeline
-from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
 
 
@@ -51,7 +46,6 @@ def classify_many_instances(classifier, feature_map, features_per_instance):
     test_vectors = [vectorize_sentence(feats, feature_map) for feats in features_per_instance]
     test_array = np.reshape(test_vectors, (number_of_sentences, number_of_features))
     classifications = classifier.predict(test_array)
-    #decision_func_results = classifier.decision_function(test_array)
     probabilities = classifier.predict_proba(test_array)#transform_svm_nums_to_probabilities(decision_func_results)
 
     return classifications, probabilities
@@ -87,7 +81,7 @@ def load_classifier(classifier_file, feature_map_file):
         classifier = sklearn.externals.joblib.load(classifier_file)
         feature_map = Pickle.load(open(feature_map_file, "rb"))
     except IOError:
-        print("Error: can't find trained models. Run \"train_models.py\" and make sure model files are in the correct "
+        print("Error Extraction/Clasification.py ln 84: can't find trained models. Run \"train_models.py\" and make sure model files are in the correct "
               "location with the correct name \n we looked in the following dir: \n\t" + classifier_file)
 
     return classifier, feature_map

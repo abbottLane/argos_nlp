@@ -274,8 +274,8 @@ def build_patients_from_tsv(tsv_in):
 def build_patients_from_csv_parse(patient_dict):
     patients = list()
     for patient_id, docs in patient_dict.iteritems():
-        patient_documents, patient_caisis_id = get_patient_docs(docs)
-        patient_obj = Patient(patient_caisis_id)
+        patient_documents = get_patient_docs(docs)
+        patient_obj = Patient(patient_id)
         patient_obj.doc_list = patient_documents
         patients.append(patient_obj)
     return patients
@@ -283,15 +283,13 @@ def build_patients_from_csv_parse(patient_dict):
 
 def get_patient_docs(docs):
     documents = list()
-    patient_caisis_id = None
     for doc_id, fields in docs.iteritems():
-        patient_caisis_id = doc_id.split('_')[0]
         sentence_objs, doc_text = get_sentences_from_field_tuples(fields, doc_id)
         sentence_objs = rejoin_sent_objs_on_leading_punctuation(sentence_objs)
         document_obj = Document(doc_id, doc_text)
         document_obj.sent_list = sentence_objs
         documents.append(document_obj)
-    return documents, patient_caisis_id
+    return documents
 
 
 def rejoin_sent_objs_on_leading_punctuation(sent_objs):
