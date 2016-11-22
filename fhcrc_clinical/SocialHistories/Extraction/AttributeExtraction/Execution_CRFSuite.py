@@ -42,7 +42,6 @@ def test(test_sents, model_name, type):
         # Predict type sequence
         predictions = tagger.tag(sent2features(tagged_sent))
         probability = tagger.probability(predictions)
-
         classified_text = zip(tokenized_text,predictions)
 
         # Expand tuple to have span as well as probability
