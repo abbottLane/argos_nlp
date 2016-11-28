@@ -44,20 +44,5 @@ def extract_sentence_level_info(patients):
     EventFilling.link_attributes_to_substances(patients)
 
 
-def evaluate_extraction(patients):
-    # Event detection
-    EventAndStatusEvaluate.evaluate_event_detection(patients)
-
-    # Status classification
-    EventAndStatusEvaluate.evaluate_status_classification(patients)
-
-    # Extraction of each attribute
-    AttributeEvaluate.evaluate_attributes(patients)
-
-    # Event-Attribute linking?
-
-    # Template?
-
-
 if __name__ == '__main__':
     patient_substance_info = main()

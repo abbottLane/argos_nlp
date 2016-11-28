@@ -37,6 +37,7 @@ def flor_sentence_features_and_labels():
 
     return sent_feat_dicts, labels_per_subst
 
+
 def sentence_features_and_labels(patients):
     """ Used for labelled data """
     sent_feat_dicts = []    # List of sentence feature dictionaries
@@ -67,13 +68,17 @@ def sentence_features_and_labels(patients):
                             labels_per_subst[substance_type].append(NO_SUBSTANCE)
     return sent_feat_dicts, labels_per_subst
 
+
 def flor_get_features(sent_text):
     feats = {}
     # Unigrams
     grams = tokenize(sent_text)
     for gram in grams:
         feats[gram] = True
+    # bigrams
+    feats.update(get_bigrams(grams))
     return feats
+
 
 def get_features(sent_obj):
     feats = {}
@@ -81,8 +86,17 @@ def get_features(sent_obj):
     grams = tokenize(sent_obj.text)
     for gram in grams:
         feats[gram] = True
-
+    #bigrams
+    feats.update(get_bigrams(grams))
     return feats
+
+
+def get_bigrams(input_list):
+    bigrams = zip(input_list, input_list[1:])
+    bi_feats = dict()
+    for bigram in bigrams:
+        bi_feats[str(bigram[0]) + "_" + str(bigram[1])] = True
+    return bi_feats
 
 
 def tokenize(sent_text):
