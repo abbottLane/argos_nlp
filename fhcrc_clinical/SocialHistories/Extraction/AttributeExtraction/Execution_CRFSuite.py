@@ -1,13 +1,13 @@
+import traceback
 import nltk
 import pycrfsuite
-
 from fhcrc_clinical.SocialHistories.DataModeling.DataModels import Attribute
-from fhcrc_clinical.SocialHistories.Extraction.AttributeExtraction.Processing_CRFSuite import sent2features, tokenize_sentences, \
-    standardize_tokens
+from fhcrc_clinical.SocialHistories.Extraction.AttributeExtraction.Processing_CRFSuite import sent2features, tokenize_sentences
 from fhcrc_clinical.SocialHistories.SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME
 from fhcrc_clinical.SocialHistories.SystemUtilities.Globals import entity_types
 from fhcrc_clinical.SocialHistories.SystemUtilities.Parameter_Configuration import SENTENCE_TOK_PATTERN
 import os
+
 
 def extract(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME):
     # Extract all sentences with subs info + the sentence after
@@ -38,11 +38,16 @@ def test(test_sents, model_name, type):
         # Recover spans
         tokenized_text, spans = recover_spans(sent_obj.text)
         # Standardize dates, nums, amounts
-        #tokenized_text = standardize_tokens(tokenized_text)
+        #tokenized_text = standardize_tokens(tokd_sent)
+        # combine standardized and pos-tagged token for input into vectorizer
+        #vectorizer_input = combine_tokens(tokenized_text, tagged_sent)
+        # Generate feature vectors
+        feature_vectors = sent2features(tagged_sent)
         # Predict type sequence
-        predictions = tagger.tag(sent2features(tagged_sent))
+        predictions = tagger.tag(feature_vectors)
         probability = tagger.probability(predictions)
-        classified_text = zip(tokenized_text,predictions)
+
+        classified_text = zip(tokenized_text, predictions)
 
         # Expand tuple to have span as well as probability
         final_class_and_span = list()
@@ -100,3 +105,27 @@ def get_attributes(crf_classification_tuple_list):
             attribs.append(attrib)
         i += 1
     return attribs
+
+
+def combine_tokens(standardized_toks, tagged_toks):
+
+    try:
+        #assert (len(standardized_toks) == len(tagged_toks))
+        new_token_tuples = list()
+        for i in range(len(standardized_toks)):
+
+            new_tuple = (standardized_toks[i], tagged_toks[i][1])
+            new_token_tuples.append(new_tuple)
+        return new_token_tuples
+    except Exception:
+        print("standardized toks length: " + str(len(standardized_toks)))
+        for tok in standardized_toks:
+            print ("\t" + str(tok))
+        print("pos tagged toks length: " + str(len(tagged_toks)))
+        for tok in tagged_toks:
+            print ("\t" + str(tok))
+        print "=========================================="
+        traceback.print_exc()
+        print "=========================================="
+        return tagged_toks # if theres a mismatch between the two token set lengths, just default to pos-tagged toks
+

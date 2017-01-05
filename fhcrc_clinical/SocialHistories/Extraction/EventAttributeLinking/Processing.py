@@ -93,7 +93,7 @@ def __add_events_in_sent(attrib_feature_dict, events):
 def __add_events_in_previous_sent(attrib_feature_dict, events):
     for event in events:
         if event.status:
-            feat = CURRENT_SENT_EVENT_TYPE + event.substance_type
+            feat = PREV_SENT_EVENT_TYPE + event.substance_type
             attrib_feature_dict[feat] = True
 
 
@@ -118,12 +118,12 @@ def __add_closest_left_keyword(attrib_feature_dict, attrib, sent, previous_sent)
         substance = find_closest_left_keyword_in_sent(attrib, previous_sent)
 
     # Add the feature
-    attrib_feature_dict[CLOSEST_LEFT_KEYWORD] = substance
+    attrib_feature_dict[CLOSEST_LEFT_KEYWORD+substance] = True
 
 
 def __add_closest_right_keyword(attrib_feature_dict, attrib, sent):
     substance = find_closest_right_keyword_in_sent(attrib, sent)
-    attrib_feature_dict[CLOSEST_RIGHT_KEYWORD] = substance
+    attrib_feature_dict[CLOSEST_RIGHT_KEYWORD + substance] = True
 
 
 def find_closest_left_keyword_in_sent(attrib, sent):
@@ -132,14 +132,15 @@ def find_closest_left_keyword_in_sent(attrib, sent):
 
     for substance in sent.keyword_hits:
         if sent.keyword_hits[substance]:
-            for keyword in sent.keyword_hits:
+            for keyword in sent.keyword_hits[substance]:
+                keyword_span_start=keyword.span_start - sent.span_in_doc_start
+                keyword_span_end = keyword.span_end - sent.span_in_doc_start
                 # If keyword is before attribute
-                if keyword.span_end < attrib.span_start:
+                if keyword_span_end < attrib.span_start:
                     # If keyword is the closest seen thus far
-                    if keyword.span_end > closest_end_index:
-                        closest_end_index = keyword.span_end
+                    if keyword_span_end > closest_end_index:
+                        closest_end_index = keyword_span_end
                         closest_substance = substance
-
     return closest_substance
 
 
@@ -149,14 +150,15 @@ def find_closest_right_keyword_in_sent(attrib, sent):
 
     for substance in sent.keyword_hits:
         if sent.keyword_hits[substance]:
-            for keyword in sent.keyword_hits:
+            for keyword in sent.keyword_hits[substance]:
+                keyword_span_start = keyword.span_start - sent.span_in_doc_start
+                keyword_span_end = keyword.span_end - sent.span_in_doc_start
                 # If keyword is after attribute
-                if keyword.span_start > attrib.span_end:
+                if keyword_span_start > attrib.span_end:
                     # If keyword is the closest seen thus far
-                    if keyword.span_start < closest_start_index:
-                        closest_start_index = keyword.span_end
+                    if keyword_span_start < closest_start_index:
+                        closest_start_index = keyword_span_end
                         closest_substance = substance
-
     return closest_substance
 
 

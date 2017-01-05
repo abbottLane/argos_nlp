@@ -1,13 +1,15 @@
 import re
 import os
 import string
+
+from fhcrc_clinical.SocialHistories.Extraction.KeywordSearch import KeywordSearch
 from fhcrc_clinical.SocialHistories.SystemUtilities.Globals import *
 from fhcrc_clinical.SocialHistories.SystemUtilities.Configuration import DATA_DIR
 import json
 
 
 def load_flor_patients():
-    with open(os.path.join(DATA_DIR, "resources", "Florians_sentence_level_annotations", "sentence_level_annotations.json")) as data_file:
+    with open(os.path.join(DATA_DIR, "FlorianData", "sentence_level_annotations.json")) as data_file:
         data = json.load(data_file)
     return data
 
@@ -37,7 +39,6 @@ def flor_sentence_features_and_labels():
 
     return sent_feat_dicts, labels_per_subst
 
-
 def sentence_features_and_labels(patients):
     """ Used for labelled data """
     sent_feat_dicts = []    # List of sentence feature dictionaries
@@ -52,7 +53,7 @@ def sentence_features_and_labels(patients):
     for patient in patients:
         for doc in patient.doc_list:
             for sent in doc.sent_list:
-                if sent.text is not "":
+                if rgx_match_substance_reference(sent): # before training, make sure sent passes regex blocking scheme
                     sent_count += 1
                     # Features per sentence
                     sent_features = get_features(sent)
@@ -69,24 +70,29 @@ def sentence_features_and_labels(patients):
     return sent_feat_dicts, labels_per_subst
 
 
+def rgx_match_substance_reference(sent):
+    text = sent.text
+    value = KeywordSearch.search_keywords_in_sentence(text)
+    return value
+
+
 def flor_get_features(sent_text):
     feats = {}
-    # Unigrams
+    # Unigrams, bigrams
     grams = tokenize(sent_text)
     for gram in grams:
         feats[gram] = True
-    # bigrams
+
     feats.update(get_bigrams(grams))
     return feats
 
-
 def get_features(sent_obj):
     feats = {}
-    # Unigrams
+    # Unigrams, bigrams
     grams = tokenize(sent_obj.text)
     for gram in grams:
         feats[gram] = True
-    #bigrams
+
     feats.update(get_bigrams(grams))
     return feats
 

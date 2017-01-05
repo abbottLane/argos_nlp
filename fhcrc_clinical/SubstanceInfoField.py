@@ -1,3 +1,4 @@
+from fhcrc_clinical.SocialHistories.SystemUtilities.Globals import STATUS
 from fhcrc_clinical.global_strings import *
 from fhcrc_clinical.SocialHistories.DataLoading.DataLoadingGlobals import *
 

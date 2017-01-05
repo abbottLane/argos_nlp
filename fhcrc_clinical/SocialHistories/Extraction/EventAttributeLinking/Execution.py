@@ -89,7 +89,6 @@ def put_attributes_in_sent_events(sent, attribs_per_substance):
 def attributes_to_doc_level(doc):
     """@type: doc = Document"""
     doc_attribs_per_substance = {subst: {} for subst in SUBSTANCE_TYPES}
-
     # Create a document attribute object from sentence attributes
     for sent in doc.sent_list:
         for event in sent.predicted_events:

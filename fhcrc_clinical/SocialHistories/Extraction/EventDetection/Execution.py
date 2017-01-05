@@ -17,11 +17,10 @@ def detect_sentence_events(patients):
         for patient in patients:
             for doc in patient.doc_list:
                 for sent in doc.sent_list:
-                    classify_sent_for_substance(classifier, feature_map, sent, substance_type,
-                                                sentences_predicted_to_have_events)
-
-    # Substances detected with rules
-    # -- would go here
+                    # block out subs sentences with regex first, because vectorization is expensive
+                    if rgx_match_substance_reference(sent):
+                        classify_sent_for_substance(classifier, feature_map, sent, substance_type,
+                                                    sentences_predicted_to_have_events)
 
     return sentences_predicted_to_have_events
 
