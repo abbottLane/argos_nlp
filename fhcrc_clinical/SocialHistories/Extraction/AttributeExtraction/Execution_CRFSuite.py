@@ -37,10 +37,6 @@ def test(test_sents, model_name, type):
         tagged_sents.append(tagged_sent)
         # Recover spans
         tokenized_text, spans = recover_spans(sent_obj.text)
-        # Standardize dates, nums, amounts
-        #tokenized_text = standardize_tokens(tokd_sent)
-        # combine standardized and pos-tagged token for input into vectorizer
-        #vectorizer_input = combine_tokens(tokenized_text, tagged_sent)
         # Generate feature vectors
         feature_vectors = sent2features(tagged_sent)
         # Predict type sequence

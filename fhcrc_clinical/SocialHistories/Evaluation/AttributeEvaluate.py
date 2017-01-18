@@ -18,17 +18,12 @@ def evaluate_attributes(patients):
         # Find performance of attribute in each document
         for patient in patients:
             for doc in patient.doc_list:
+                # # DEBUG ###########
+                if attribute_type == QUIT_DATE:
+                    pause = 0
+                    # # DEBUG ###########
                 evaluate_doc_attribute(attribute_type, doc, value_eval_data, value_span_eval_data,
                                        all_span_eval_data, all_span_overlap_eval_data, all_span_overlap_not_by_subs)
-
-        # # DEBUG ###########
-        # all_span_overlap_not_by_subs.calculate_precision_recall_f1()
-        # print(attribute_type + "::")
-        # print("\tP: " + str(all_span_overlap_not_by_subs.precision))
-        # print("\tR: " + str(all_span_overlap_not_by_subs.recall))
-        # print("\tF1: " + str(all_span_overlap_not_by_subs.f1))
-        # tmp = 0
-        # # DEBUG ###########
 
         # Output total performance
         evaluate_total_performance(attribute_type, value_eval_data, value_span_eval_data, all_span_eval_data,

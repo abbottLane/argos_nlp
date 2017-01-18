@@ -16,6 +16,7 @@ def get_doc_level_info(patients):
             EventFilling.attributes_to_doc_level(doc)
 
 
+
 def find_doc_events(doc):
     substances_in_docs = substances_found_in_sents(doc)
 

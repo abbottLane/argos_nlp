@@ -200,8 +200,9 @@ def assign_goldLabels_to_sents(sents, doc):
 
 def assign_keywords_to_sents(sents, doc):
     """ Used for features in ML as well as assigning attributes to events """
-    for event in doc.gold_events:
-        substance = event.substance_type
+    # was: for event in doc.gold_events:
+    for subst in KEYWORD_SUBSTANCES:
+        substance = subst
         doc_hits = doc.keyword_hits[substance]
         keyword_index = 0
         sent_index = 0
@@ -327,6 +328,8 @@ def get_patient_docs(docs):
         sentence_objs, doc_text = get_sentences_from_field_tuples(fields, doc_id)
         sentence_objs = rejoin_sent_objs_on_leading_punctuation(sentence_objs)
         document_obj = Document(doc_id, doc_text)
+        populate_document_keyword_hits(document_obj)
+        assign_keywords_to_sents(sentence_objs, document_obj)
         document_obj.sent_list = sentence_objs
         documents.append(document_obj)
     return documents, patient_caisis_id

@@ -1,12 +1,13 @@
 from sklearn.externals import joblib
 import cPickle as Pickle
-from SystemUtilities.Configuration import *
-from Extraction import Classification
+from fhcrc_clinical.SocialHistories.SystemUtilities.Configuration import *
+from fhcrc_clinical.SocialHistories.Extraction import Classification
 import Processing
-from SystemUtilities.Globals import EVENT_FILLER_MODEL_NAME, EVENT_FILLER_FEATMAP_NAME
+from fhcrc_clinical.SocialHistories.SystemUtilities.Globals import EVENT_FILLER_MODEL_NAME, EVENT_FILLER_FEATMAP_NAME
 
 
 def train_event_fillers(patients):
+    print "Training Event-Fillers ..."
     # Train model
     features, labels = Processing.features_and_labels(patients)
     classifier, feature_map = Classification.train_classifier(features, labels)

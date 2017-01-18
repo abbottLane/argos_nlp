@@ -65,10 +65,12 @@ def add_attribute_feats(sent, attrib, previous_sent, feature_sets):
 def get_attribute_features(attrib, sent, previous_sent):
     attrib_feature_dict = {}
 
+    __bias(attrib_feature_dict)
+
     # All event types found in current sentence and previous sentence
-    __add_events_in_sent(attrib_feature_dict, sent.gold_events)
+    __add_events_in_sent(attrib_feature_dict, sent.predicted_events)
     if previous_sent:
-        __add_events_in_previous_sent(attrib_feature_dict, previous_sent.gold_events)
+        __add_events_in_previous_sent(attrib_feature_dict, previous_sent.predicted_events)
 
     # Attribute type and unigrams
     __add_attrib_property_feats(attrib_feature_dict, attrib)
@@ -83,9 +85,13 @@ def get_attribute_features(attrib, sent, previous_sent):
     return attrib_feature_dict
 
 
+def __bias(attrib_feature_dict):
+    attrib_feature_dict["bias"] = True
+
+
 def __add_events_in_sent(attrib_feature_dict, events):
     for event in events:
-        if event.status:
+        if event.status and event.status != "unknown":
             feat = CURRENT_SENT_EVENT_TYPE + event.substance_type
             attrib_feature_dict[feat] = True
 
@@ -115,7 +121,7 @@ def __add_closest_left_keyword(attrib_feature_dict, attrib, sent, previous_sent)
 
     # If none in current sentence, check previous sentence
     if previous_sent and not substance:
-        substance = find_closest_left_keyword_in_sent(attrib, previous_sent)
+        substance = find_closest_left_keyword_in_sent(attrib, previous_sent, prevSent=True)
 
     # Add the feature
     attrib_feature_dict[CLOSEST_LEFT_KEYWORD+substance] = True
@@ -126,7 +132,7 @@ def __add_closest_right_keyword(attrib_feature_dict, attrib, sent):
     attrib_feature_dict[CLOSEST_RIGHT_KEYWORD + substance] = True
 
 
-def find_closest_left_keyword_in_sent(attrib, sent):
+def find_closest_left_keyword_in_sent(attrib, sent, prevSent=False):
     closest_end_index = 0
     closest_substance = ""
 
@@ -136,7 +142,7 @@ def find_closest_left_keyword_in_sent(attrib, sent):
                 keyword_span_start=keyword.span_start - sent.span_in_doc_start
                 keyword_span_end = keyword.span_end - sent.span_in_doc_start
                 # If keyword is before attribute
-                if keyword_span_end < attrib.span_start:
+                if keyword_span_end < attrib.span_start or prevSent:
                     # If keyword is the closest seen thus far
                     if keyword_span_end > closest_end_index:
                         closest_end_index = keyword_span_end

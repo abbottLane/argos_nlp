@@ -3,7 +3,6 @@ import re
 
 from fhcrc_clinical.SocialHistories.Extraction.AttributeExtraction.Patterns import *
 from fhcrc_clinical.SocialHistories.SystemUtilities.Parameter_Configuration import SENTENCE_TOK_PATTERN
-from dateutil.parser import parse
 
 
 def word2features(sent, i):

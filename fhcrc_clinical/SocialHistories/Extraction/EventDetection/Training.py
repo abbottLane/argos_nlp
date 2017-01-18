@@ -1,8 +1,8 @@
 from sklearn.externals import joblib
 import cPickle as Pickle
-from SystemUtilities.Configuration import *
+from fhcrc_clinical.SocialHistories.SystemUtilities.Configuration import *
 from Processing import *
-from Extraction import Classification
+from fhcrc_clinical.SocialHistories.Extraction import Classification
 
 
 def train_event_detectors(patients):
@@ -22,6 +22,7 @@ def train_event_detectors(patients):
     else:
         print ("Florian supplementary data not detected, training on original training dataset only")
 
+    print ("Performing EventDetection Training...this may take a while...")
     for substance_type in ML_CLASSIFIER_SUBSTANCES:
         # Train classifier
         classifier, feature_map = Classification.train_classifier(sent_feat_dicts, labels_per_subst[substance_type])

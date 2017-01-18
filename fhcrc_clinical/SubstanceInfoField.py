@@ -38,7 +38,8 @@ class SubstanceField:
             self.add_doc_field_contents_to_dict(doc)
 
     def add_doc_field_contents_to_dict(self, doc):
-        """@type doc: Document"""
+        """@type doc: Document
+        """
         for event in doc.predicted_events:
             if event.substance_type == self.substance:
                 if self.field in event.attributes:
@@ -81,8 +82,9 @@ def get_document(patients, mrn, accession):
             for doc in patient.doc_list:
                 if doc.id == accession:
                     document = doc
+                    if document.id == "6153_00018":
+                        pause = 0
                     found = True
                     break
             break
-
     return document, found

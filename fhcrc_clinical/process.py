@@ -42,7 +42,6 @@ def get_fields(report_d, clinical_data_d, mrn, accession, patient_substance_info
         # get field values
         field_value, return_type = get_field_values(module, report_d, field, mrn, accession, patient_substance_info)
 
-
         # organize fields by tables, then individual records, then individual fields
         if return_type == list:
             for each_field in field_value:

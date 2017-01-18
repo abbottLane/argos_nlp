@@ -36,17 +36,14 @@ def load_event_classifier(event_type):
 
 
 def classify_sent_for_substance(classifier, feature_map, sent, substance, sentences_predicted_to_have_events):
+    # USE THE SVM:
     sent_feats = get_features(sent)
-
     classifications = Classification.classify_instance(classifier, feature_map, sent_feats)
-
     # Add detected event to sentence
     if classifications[0] == HAS_SUBSTANCE:
-        has_substance_keyword = KeywordSearch.search_keywords_in_sentence(sent.text)
-        if has_substance_keyword:
-            event = Event(substance)
-            sent.predicted_events.append(event)
-            sentences_predicted_to_have_events.append(sent)
+        event = Event(substance)
+        sent.predicted_events.append(event)
+        sentences_predicted_to_have_events.append(sent)
 
 
 

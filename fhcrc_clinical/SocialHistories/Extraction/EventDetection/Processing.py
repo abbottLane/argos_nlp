@@ -43,10 +43,8 @@ def sentence_features_and_labels(patients):
     """ Used for labelled data """
     sent_feat_dicts = []    # List of sentence feature dictionaries
     labels_per_subst = {}       # Substance type : list of labels for each sentence (HAS/DOESN'T HAVE)
-
     for substance_type in SUBSTANCE_TYPES:
         labels_per_subst[substance_type] = []
-
     # grab sentence features and labels
     count=0
     sent_count=0
@@ -85,6 +83,7 @@ def flor_get_features(sent_text):
 
     feats.update(get_bigrams(grams))
     return feats
+
 
 def get_features(sent_obj):
     feats = {}

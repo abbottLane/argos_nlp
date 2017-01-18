@@ -76,8 +76,8 @@ def evaluate_sentence_status_classification(sent, sentence_eval_data, label):
 
 
 def evaluate_sentence_event_detection(sent, sentence_eval_data):
-    gold_substs = [g.substance_type for g in sent.gold_events]  # find_sent_gold_substs(sent, doc)
-    predicted_substs = [p.substance_type for p in sent.predicted_events]
+    gold_substs = [g.substance_type for g in sent.gold_events if g.status != "unknown"]  # find_sent_gold_substs(sent, doc)
+    predicted_substs = [p.substance_type for p in sent.predicted_events if p.status != "unknown"]
 
     compare_gold_and_predicted_substances(gold_substs, predicted_substs, sentence_eval_data, sent.text)
 
