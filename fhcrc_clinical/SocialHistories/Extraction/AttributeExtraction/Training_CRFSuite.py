@@ -15,8 +15,6 @@ def train(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME):
     for type in entity_types:
         model_name = os.path.join(model_path, "model-" + type + ".ser.gz")
         training_sents, training_labels = load_train_data(sentence_objs,type)
-        #  standardize DATES, NUM, AMT
-        #training_sents = standardize_tokens_list(training_sents)
         # DEBUG
         Debug_Methods.write_training_data_as_file(training_sents, training_labels, sentence_objs)
         # get features and labels
@@ -38,7 +36,6 @@ def train_data(x_train, y_train, model_name):
         'c1': .1,#1.0,  # coefficient for L1 penalty
         'c2': .1, #1e-3,  # coefficient for L2 penalty
         'max_iterations': 100,  # stop earlier
-
         # include transitions that are possible, but not observed
         'feature.possible_transitions': True
     })

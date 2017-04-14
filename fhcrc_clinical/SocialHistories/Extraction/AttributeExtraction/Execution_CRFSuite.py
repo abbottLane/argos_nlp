@@ -32,6 +32,7 @@ def test(test_sents, model_name, type):
     for i in range(0, len(toked_test_sents), 1):
         tokd_sent=toked_test_sents[i]
         sent_obj = test_sents[i]
+
         # Tag for POS
         tagged_sent = nltk.pos_tag(tokd_sent)
         tagged_sents.append(tagged_sent)

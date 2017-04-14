@@ -12,8 +12,17 @@ def get_feature_vectors(sents):
         vectors.update(uni_feats)
         vectors.update(get_bigrams(unigrams))
         vectors.update(get_trigrams(unigrams))
+        vectors.update(get_keyword_hits_features(sent))
         feature_vecs.append(vectors)
     return feature_vecs
+
+
+def get_keyword_hits_features(sent_obj):
+    hit_token_by_type = dict()
+    for type, list_hits in sent_obj.keyword_hits.items():
+        for hit in list_hits:
+            hit_token_by_type["KeywordHit_"+type+"_"+hit.text] = True
+    return hit_token_by_type
 
 
 def flor_get_feature_vectors():
